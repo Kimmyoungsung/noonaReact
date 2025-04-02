@@ -1,5 +1,5 @@
 import './App.css';
-import Box from "./component/Box.jsx";
+import Box from './component/box';
 import { useState } from "react";
 
 const choice = {
