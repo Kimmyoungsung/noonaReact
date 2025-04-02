@@ -19,27 +19,71 @@ const choice = {
 
 function App() {
   const [userSelect, setUserSelect] = useState(null);
-  const [computerSelect, setcomputerSelect] = useState(null);
-  
+  const [computerSelect, setComputerSelect] = useState(null);
+  const [userResult, setUserResult] = useState("");  // 유저 결과
+  const [computerResult, setComputerResult] = useState("");  // 컴퓨터 결과
+  const [userBorderColor, setUserBorderColor] = useState("black");
+  const [computerBorderColor, setComputerBorderColor] = useState("black");
 
   const play = (userChoice) => {
     setUserSelect(choice[userChoice]);
     let computerChoice = randomChoice();
-    setcomputerSelect(computerChoice);
+    setComputerSelect(computerChoice);
+    const gameResult = judgement(choice[userChoice], computerChoice);
+    
+    // 유저와 컴퓨터 각각 결과 설정
+    if (gameResult === "win") {
+      setUserResult("win");
+      setComputerResult("lose");
+      setUserBorderColor("green");
+      setComputerBorderColor("red");
+    } else if (gameResult === "lose") {
+      setUserResult("lose");
+      setComputerResult("win");
+      setUserBorderColor("red");
+      setComputerBorderColor("green");
+    } else {
+      setUserResult("tie");
+      setComputerResult("tie");
+      setUserBorderColor("black");
+      setComputerBorderColor("black");
+    }
   };
 
-  const randomChoice=() => {
-    let itemArray = Object.keys(choice);//객체의 키값만 뽑아서 어레이로 만들어준다다
-    console.log("item array",itemArray)
-    let randomItem = Math.floor(Math.random()*itemArray.length);
-    let final = itemArray[randomItem]
+  const judgement = (user, computer) => {
+    if (user.name === computer.name) {
+      return "tie";  // 비기면 "tie"
+    } else if (user.name === "Rock") {
+      return computer.name === "Scissors" ? "win" : "lose";  // Rock > Scissors 이기고, 다른 경우 지기
+    } else if (user.name === "Scissors") {
+      return computer.name === "Paper" ? "win" : "lose";  // Scissors > Paper 이기고, 다른 경우 지기
+    } else if (user.name === "Paper") {
+      return computer.name === "Rock" ? "win" : "lose";  // Paper > Rock 이기고, 다른 경우 지기
+    }
+  };
+
+  const randomChoice = () => {
+    let itemArray = Object.keys(choice);
+    let randomItem = Math.floor(Math.random() * itemArray.length);
+    let final = itemArray[randomItem];
     return choice[final];
-  }
+  };
+
   return (
     <div>
       <div className="main">
-        <Box title="You" item={userSelect} />
-        <Box title="computerSelect" item={computerSelect}/>
+        <Box 
+          title="You" 
+          item={userSelect} 
+          result={userResult} 
+          borderColor={userBorderColor} 
+        />
+        <Box 
+          title="Computer" 
+          item={computerSelect} 
+          result={computerResult} 
+          borderColor={computerBorderColor} 
+        />
       </div>
       <div className="main">
         <button onClick={() => play("scissors")}>가위</button>
